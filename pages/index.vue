@@ -1,32 +1,23 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">hide-license</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
+    <div class="column area">
+      <droparea />
+      <button @click="quickstart()">変換する</button>
     </div>
+    <previewarea />
+    <!-- <div class="column area">
+      <div class="preview-area test">
+        <canvas id="board"></canvas>
+      </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-export default {}
+// import droparea from '../components/droparea.vue'
+export default {
+  // components: true,
+}
 </script>
 
 <style>
@@ -39,25 +30,21 @@ export default {}
   text-align: center;
 }
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
+.column {
+  margin: 0 auto;
+  width: 80%;
 }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+.area {
+  padding-top: 15px;
+  margin: 0 auto;
 }
 
 .links {
   padding-top: 15px;
+}
+
+.preview-area {
+  list-style: none;
 }
 </style>
