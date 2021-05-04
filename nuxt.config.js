@@ -9,7 +9,7 @@ export default {
   head: {
     title: 'hide-license',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'ja',
     },
     meta: [
       { charset: 'utf-8' },
