@@ -1,43 +1,33 @@
 <template>
   <div class="container">
-    <div class="column area">
-      <droparea />
-      <button @click="quickstart()">変換する</button>
-    </div>
-    <previewarea />
-    <!-- <div class="column area">
-      <div class="preview-area test">
-        <canvas id="board"></canvas>
-      </div>
-    </div> -->
+    <section>
+      <Main />
+    </section>
+    <section>
+      <div id="previewarea"></div>
+    </section>
   </div>
 </template>
 
 <script>
-// import droparea from '../components/droparea.vue'
+import Main from '../components/main.vue'
+
 export default {
-  // components: true,
+  components: {
+    Main,
+  },
 }
 </script>
 
 <style>
 .container {
+  width: 90%;
+  max-width: 960px;
   margin: 0 auto;
   min-height: 100vh;
-  display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-}
-
-.column {
-  margin: 0 auto;
-  width: 80%;
-}
-
-.area {
-  padding-top: 15px;
-  margin: 0 auto;
 }
 
 .links {
