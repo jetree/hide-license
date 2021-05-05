@@ -23,11 +23,14 @@
         />
       </label>
     </div>
-    <button @click="quickstart()">変換する</button>
+    <HideLicenseButton :image-data="imageData" @click="quickstart()">
+      変換する
+    </HideLicenseButton>
   </section>
 </template>
 
 <script>
+// import HideLicenseButton from './hide-licenseButton.vue'
 // const GOOGLE_API_KEY = process.env['VISION_API_KEY']
 
 export default {
@@ -47,9 +50,6 @@ export default {
       this.changeFile(e)
     },
     changeFile(e) {
-      const files = e.target.files || e.dataTransfer.files
-      console.log(files)
-      // this.$store.dispatch('store/drawPreview', e)
       this.imagePreview(e)
       this.onArea = false
     },
@@ -57,8 +57,8 @@ export default {
       this.onArea = false
     },
     imagePreview(e) {
+      console.log(e)
       const filedata = e.target.files || e.dataTransfer.files
-      console.log('発火')
       for (let i = 0; i < filedata.length; i++) {
         const previewarea = document.getElementById('previewarea')
         let board = document.createElement('canvas')
