@@ -23,7 +23,11 @@
         />
       </label>
     </div>
-    <HideLicenseButton :image-data="imageData" @click="quickstart()">
+    <HideLicenseButton
+      :image-data="imageData"
+      :image-files="imageFiles"
+      @click="quickstart()"
+    >
       変換する
     </HideLicenseButton>
   </section>
@@ -38,7 +42,7 @@ export default {
     return {
       onArea: false,
       imageData: [],
-      imagefiles: [],
+      imageFiles: [],
       result: [],
     }
   },
@@ -59,6 +63,7 @@ export default {
     imagePreview(e) {
       console.log(e)
       const filedata = e.target.files || e.dataTransfer.files
+      this.imageFiles.push(filedata)
       for (let i = 0; i < filedata.length; i++) {
         const previewarea = document.getElementById('previewarea')
         let board = document.createElement('canvas')
@@ -67,15 +72,15 @@ export default {
 
         let reader = new FileReader()
         reader.onload = (e) => {
-          const data = e.target.result || e.dataTransfer.result
+          const result = e.target.result || e.dataTransfer.result
           let image = new Image()
           image.onload = () => {
             board.width = image.naturalWidth
             board.height = image.naturalHeight
             ctx.drawImage(image, 0, 0)
           }
-          this.imageData.push(data)
-          image.src = data
+          this.imageData.push(result)
+          image.src = result
         }
         reader.readAsDataURL(filedata[i])
       }
