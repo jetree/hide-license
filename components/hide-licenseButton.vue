@@ -1,5 +1,8 @@
 <template>
-  <button @click="hideLicense()">変換する</button>
+  <div>
+    <button @click="hideLicense()">変換する</button>
+    <button v-if="success" @click="download()">一括ダウンロード</button>
+  </div>
 </template>
 
 <script>
@@ -17,26 +20,32 @@ export default {
   data: () => {
     return {
       textAnnotations: {},
+      success: false,
+      notApplicableImageIndex: [],
     }
   },
   methods: {
     async hideLicense() {
+      this.success = false
       const apiKey = process.env.GOOGLE_API_KEY
-      console.log({ process })
-      console.log({ apiKey })
+      // console.log({ process })
+      // console.log({ apiKey })
       const url = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`
 
+      const previewarea = document.getElementById('previewarea')
+
       for (let i = 0; i < this.imageFiles[0].length; i++) {
-        console.log(this.imageFiles[0])
         console.log({ i })
+        // console.log(this.imageFiles[0])
+        // console.log({ i })
         let file = this.imageFiles[0][i]
-        console.log({ file })
+        // console.log({ file })
         let filedata = this.imageData[i]
-        console.log({ filedata })
+        // console.log({ filedata })
         const sendBase64Image =
           file.type === 'image/jpeg' ? filedata.substr(23) : filedata.substr(22)
 
-        console.log({ sendBase64Image })
+        // console.log({ sendBase64Image })
 
         const requests = {
           requests: [
@@ -67,9 +76,8 @@ export default {
 
         const result = await response.json()
         this.result = result
-        console.log({ result })
+        // console.log({ result })
 
-        const previewarea = document.getElementById('previewarea')
         let canvas = previewarea.children[i]
 
         const ctx = canvas.getContext('2d')
@@ -78,7 +86,7 @@ export default {
           // ナンバーの推定結果が存在しているか調べる
           const localizedObjectAnnotations =
             result['responses'][0]['localizedObjectAnnotations']
-          console.log({ localizedObjectAnnotations })
+          // console.log({ localizedObjectAnnotations })
           const licensePlateIndex = localizedObjectAnnotations.findIndex(
             (e) => e.name === 'License plate'
           )
@@ -88,6 +96,7 @@ export default {
           // console.log({ localizedObjectAnnotations })
 
           // -1 が返ってきたらナンバーが推定されなかった
+          console.log({ licensePlateIndex })
           if (licensePlateIndex !== -1) {
             // バウンディングボックス は左上から時計回りに返ってくる
             // 正則化された値が返ってくるので実際の座標データに変換する
@@ -149,24 +158,24 @@ export default {
               ),
             }
             // licensePlateの中にある座標データをtargetとする
-            console.log({ textAnnotations })
+            // console.log({ textAnnotations })
             // License plateの座標内にあるデータを１つ取得しtargetとする
             textAnnotations = textAnnotations.reverse()
             let target = {}
-            try {
-              target = textAnnotations.find(
-                (e) =>
-                  e.boundingPoly.vertices[0].x > plateTopLeft.x &&
-                  e.boundingPoly.vertices[0].y > plateTopLeft.y &&
-                  e.boundingPoly.vertices[0].x < plateBottomRight.x &&
-                  e.boundingPoly.vertices[0].y < plateBottomRight.y &&
-                  e.boundingPoly.vertices[2].x > plateTopLeft.x &&
-                  e.boundingPoly.vertices[2].y > plateTopLeft.y &&
-                  e.boundingPoly.vertices[2].x < plateBottomRight.x &&
-                  e.boundingPoly.vertices[2].y < plateBottomRight.y
-              )
-              console.log({ target })
+            target = textAnnotations.find(
+              (e) =>
+                e.boundingPoly.vertices[0].x > plateTopLeft.x &&
+                e.boundingPoly.vertices[0].y > plateTopLeft.y &&
+                e.boundingPoly.vertices[0].x < plateBottomRight.x &&
+                e.boundingPoly.vertices[0].y < plateBottomRight.y &&
+                e.boundingPoly.vertices[2].x > plateTopLeft.x &&
+                e.boundingPoly.vertices[2].y > plateTopLeft.y &&
+                e.boundingPoly.vertices[2].x < plateBottomRight.x &&
+                e.boundingPoly.vertices[2].y < plateBottomRight.y
+            )
+            // console.log({ target })
 
+            if (target !== undefined) {
               // ナンバーの座標情報からlicenseplateの四角形に接するように拡大するため各点の移動量を計算
               const textTopLeft = {
                 x: target['boundingPoly']['vertices'][0]['x'],
@@ -221,12 +230,21 @@ export default {
                 textBottomLeft.y + calcBottomMove
               )
               ctx.fill()
-            } catch (error) {
-              console.log(error)
             }
+          } else {
+            console.log('sakujio', i)
+            this.notApplicableImageIndex.push(i)
           }
         }
       }
+      const removeTarget = this.notApplicableImageIndex.reverse()
+      console.log({ removeTarget })
+      for (let i = 0; i < removeTarget.length; i++) {
+        const removeTargetDom = previewarea.children[removeTarget[i]]
+        console.log({ removeTargetDom })
+        // previewarea.removeChild(removeTargetDom)
+      }
+      if (previewarea.childElementCount > 0) this.success = true
     },
   },
 }
