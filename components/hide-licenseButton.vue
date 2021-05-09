@@ -310,8 +310,8 @@ export default {
       console.log({ removeTarget })
       for (let i = 0; i < removeTarget.length; i++) {
         const removeTargetDom = previewarea.children[removeTarget[i]]
-        console.log({ removeTargetDom })
-        // previewarea.removeChild(removeTargetDom)
+        // console.log({ removeTargetDom })
+        previewarea.removeChild(removeTargetDom)
       }
       if (previewarea.childElementCount > 0) this.success = true
     },
