@@ -44,6 +44,7 @@ export default {
       imageData: [],
       imageFiles: [],
       result: [],
+      imageName: [],
     }
   },
   methods: {
@@ -54,17 +55,75 @@ export default {
       this.changeFile(e)
     },
     changeFile(e) {
-      this.imagePreview(e)
+      // this.imagePreview(e)
+      this.previewFiles(e)
       this.onArea = false
     },
     dragLeave() {
       this.onArea = false
     },
-    imagePreview(e) {
+    async previewFiles(e) {
+      const filedata = e.target.files || e.dataTransfer.files
+      console.log(filedata)
+      this.imageFiles.push(filedata)
+      // if (filedata) {
+      //   ;[].forEach.call(filedata, this.readAndPreview)
+      // }
+      for (let file of filedata) {
+        console.log({ file })
+        let result = await this.readAndPreview(file)
+        this.imageData.push(result)
+      }
+    },
+    async readAndPreview(file) {
+      const previewarea = document.getElementById('previewarea')
+      let reader = new FileReader()
+      let board = document.createElement('canvas')
+      let ctx = board.getContext('2d')
+      let that = []
+      previewarea.appendChild(board)
+      reader.onload = (e) => {
+        const result = e.target.result || e.dataTransfer.result
+        that.push(result)
+        console.log({ e })
+        let image = new Image()
+        image.onload = () => {
+          board.width = image.naturalWidth
+          board.height = image.naturalHeight
+          ctx.drawImage(image, 0, 0)
+        }
+        // this.imageData.push(result)
+        image.src = result
+      }
+      reader.readAsDataURL(file)
+      return that
+      // reader.addEventListener(
+      //   'load',
+      //   function () {
+      //     let board = document.createElement('canvas')
+      //     let ctx = board.getContext('2d')
+      //     previewarea.appendChild(board)
+      //     let image = new Image()
+      //     board.width = image.naturalWidth
+      //     board.height = image.naturalHeight
+      //     ctx.drawImage(image, 0, 0)
+      //     image.src = this.result
+      //     console.log(that.imageData)
+      //     that.imageData.push(this.result)
+      //     // console.log(this.result)
+      //     return this.result
+      //   },
+      //   false
+      // )
+      // this.imageData.push(file)
+    },
+    async imagePreview(e) {
       console.log(e)
       const filedata = e.target.files || e.dataTransfer.files
       this.imageFiles.push(filedata)
       for (let i = 0; i < filedata.length; i++) {
+        console.log({ i })
+        this.imageName.push(filedata[i].name)
         const previewarea = document.getElementById('previewarea')
         let board = document.createElement('canvas')
         let ctx = board.getContext('2d')
@@ -73,6 +132,8 @@ export default {
         let reader = new FileReader()
         reader.onload = (e) => {
           const result = e.target.result || e.dataTransfer.result
+          console.log({ e })
+          console.log({ result })
           let image = new Image()
           image.onload = () => {
             board.width = image.naturalWidth
