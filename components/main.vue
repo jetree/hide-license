@@ -10,7 +10,7 @@
       <span class="square-content" />
       <label>
         <span class="droparea-label">
-          画像をドラッグ&ドロップするか、クリックして画像を選択してください
+          画像をドラッグ&ドロップするか、<br />クリックして画像を選択してください
         </span>
         <input
           id="fileInput"
@@ -64,13 +64,13 @@ export default {
     },
     async previewFiles(e) {
       const filedata = e.target.files || e.dataTransfer.files
-      console.log(filedata)
+      // console.log(filedata)
       this.imageFiles.push(filedata)
       // if (filedata) {
       //   ;[].forEach.call(filedata, this.readAndPreview)
       // }
       for (let file of filedata) {
-        console.log({ file })
+        // console.log({ file })
         let result = await this.readAndPreview(file)
         this.imageData.push(result)
       }
@@ -150,7 +150,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .drop-area {
   width: 80%;
   min-width: 200px;
@@ -158,9 +158,10 @@ export default {
   margin: 20px auto;
   padding: 10px;
   text-align: center;
-  border: 1px dashed #c6c6c6;
+  border: 2px dashed #c6c6c6;
   background-color: #f9f9f9;
   position: relative;
+  border-radius: 2rem;
 }
 
 .form-control {

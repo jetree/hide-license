@@ -1,8 +1,10 @@
 <template>
-  <div>
+  <div class="main">
     <!-- <button @click="hideLicense()">変換する</button> -->
-    <button @click="test()">変換する</button>
-    <button v-if="success" @click="download()">一括ダウンロード</button>
+    <button class="btn btn-gradient" @click="start()">変換する</button>
+    <button v-if="success" class="btn btn-gradient" @click="download()">
+      一括ダウンロード
+    </button>
   </div>
 </template>
 
@@ -27,9 +29,12 @@ export default {
     }
   },
   methods: {
-    async test() {
+    async start() {
       const imageFiles = this.imageFiles
-      console.log({ imageFiles })
+      if (!imageFiles.length) {
+        return
+      }
+      // console.log({ imageFiles })
       for (let i = 0; i < this.imageFiles[0].length; i++) {
         console.log({ i })
         const resurt = await this.sendAPI(i)
@@ -91,7 +96,7 @@ export default {
     //   }
     // },
     async sendAPI(i) {
-      console.log('発火')
+      // console.log('発火')
       this.success = false
       const apiKey = process.env.GOOGLE_API_KEY
       // console.log({ process })
@@ -101,7 +106,7 @@ export default {
       // console.log(this.imageFiles[0])
       // console.log({ i })
       let file = this.imageFiles[0][i]
-      console.log('name', file.name)
+      // console.log('name', file.name)
       // console.log({ file })
       let filedata = this.imageData[i][0]
       // console.log({ filedata })
@@ -139,14 +144,14 @@ export default {
 
       const result = await response.json()
       this.result.push(result)
-      console.log({ result })
+      // console.log({ result })
       return result
     },
     // async test() {
     async hideLicense(i, result) {
       const previewarea = document.getElementById('previewarea')
       let canvas = previewarea.children[i]
-      console.log({ canvas })
+      // console.log({ canvas })
       const ctx = canvas.getContext('2d')
 
       if ('localizedObjectAnnotations' in result['responses'][0]) {
@@ -163,7 +168,7 @@ export default {
         // console.log({ localizedObjectAnnotations })
 
         // -1 が返ってきたらナンバーが推定されなかった
-        console.log({ licensePlateIndex })
+        // console.log({ licensePlateIndex })
         if (licensePlateIndex !== -1) {
           // バウンディングボックス は左上から時計回りに返ってくる
           // 正則化された値が返ってくるので実際の座標データに変換する
@@ -299,7 +304,7 @@ export default {
             ctx.fill()
           }
         } else {
-          console.log('sakujio', i)
+          // console.log('sakujio', i)
           this.notApplicableImageIndex.push(i)
         }
       }
@@ -307,7 +312,7 @@ export default {
     async removeTarget() {
       const removeTarget = this.notApplicableImageIndex.reverse()
       const previewarea = document.getElementById('previewarea')
-      console.log({ removeTarget })
+      // console.log({ removeTarget })
       for (let i = 0; i < removeTarget.length; i++) {
         const removeTargetDom = previewarea.children[removeTarget[i]]
         // console.log({ removeTargetDom })
@@ -315,6 +320,68 @@ export default {
       }
       if (previewarea.childElementCount > 0) this.success = true
     },
+    download() {
+      const previewarea = document.getElementById('previewarea')
+      const count = previewarea.childElementCount
+      for (let i = 0; i < count; i++) {
+        let canvas = previewarea.children[i]
+        const link = document.createElement('a')
+        const downloadBase64Image = canvas.toDataURL('image/png')
+        const fileName = `${new Date()
+          .toDateString()
+          .replace(/\\s+/g, '')}_${Math.round(Math.random() * 1000000000)}.png`
+        link.setAttribute('href', downloadBase64Image)
+        link.setAttribute('download', fileName)
+        link.style.visibility = 'hidden'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      }
+    },
   },
 }
 </script>
+
+<style scoped>
+.main {
+  margin-bottom: 2rem;
+}
+.btn {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.5;
+  position: relative;
+  display: inline-block;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #212529;
+  border-radius: 2rem;
+}
+
+.btn-gradient {
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 2rem;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#fa709a),
+    to(#fee140)
+  );
+  background-image: -webkit-linear-gradient(left, #fa709a 0%, #fee140 100%);
+  background-image: linear-gradient(to right, #fa709a 0%, #fee140 100%);
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+</style>
