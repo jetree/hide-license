@@ -19,15 +19,16 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
-  width: 90%;
+  width: 100%;
   max-width: 960px;
   margin: 0 auto;
   min-height: 100vh;
   justify-content: center;
   align-items: center;
   text-align: center;
+  background-color: azure;
 }
 
 .links {
