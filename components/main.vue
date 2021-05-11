@@ -1,5 +1,6 @@
 <template>
   <section>
+    <HowToUse />
     <div
       :class="{ onArea: onArea }"
       class="drop-area"
