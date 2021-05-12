@@ -28,7 +28,7 @@
   width: 80%;
   min-width: 200px;
   min-height: 200px;
-  margin: 20px auto;
+  margin: 0px auto 20px;
   text-align: left;
 }
 .description {

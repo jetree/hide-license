@@ -1,11 +1,13 @@
 <template>
-  <div class="container">
-    <section>
-      <Main />
-    </section>
-    <section>
-      <div id="previewarea"></div>
-    </section>
+  <div class="body">
+    <div class="container">
+      <section>
+        <Main />
+      </section>
+      <section>
+        <div id="previewarea"></div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -20,6 +22,10 @@ export default {
 </script>
 
 <style scoped>
+.body {
+  width: 100%;
+  background-color: azure;
+}
 .container {
   width: 100%;
   max-width: 960px;
@@ -28,7 +34,6 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: azure;
 }
 
 .links {

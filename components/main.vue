@@ -179,7 +179,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
-  z-index: 2;
+  /* z-index: 1; */
 }
 
 .form-control {
