@@ -35,7 +35,8 @@ export default {
   padding-top: 15px;
 }
 
-.preview-area {
+#previewarea {
   list-style: none;
+  overflow: auto;
 }
 </style>
